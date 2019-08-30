@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-Rscript src/API/NLP_API.R
+Rscript src/your_scripts.R
