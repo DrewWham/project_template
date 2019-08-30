@@ -28,7 +28,7 @@ Following this directory structure
     |   |   |--build_features.r
     |   |
     |   |--models                         <- Scripts for training and saving models
-    |   |   |--train_model.py
+    |   |   |--train_model.r
     |   |
     |
     |
