@@ -13,7 +13,6 @@ Following this directory structure
     |--README.md                          <- Top-level README for developers
     |--volume
     |   |--data
-    |   |   |--external                   <- Data from third party sources
     |   |   |--interim                    <- Intermediate data that has been transformed
     |   |   |--processed                  <- The final model-ready data
     |   |   |--raw                        <- The original data dump
