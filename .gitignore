@@ -1,11 +1,91 @@
+# ------------------------------------------------------------------------------
+# Operating system / editor files
+# ------------------------------------------------------------------------------
 
-
-# OS generated files #
-######################
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+.vscode/
+.idea/
+
+
+# ------------------------------------------------------------------------------
+# Raw and generated data
+# ------------------------------------------------------------------------------
+
+project/volume/data/raw/*
+!project/volume/data/raw/.gitkeep
+
+project/volume/data/interim/*
+!project/volume/data/interim/.gitkeep
+
+project/volume/data/processed/*
+!project/volume/data/processed/.gitkeep
+
+
+# ------------------------------------------------------------------------------
+# Data profiles
+# ------------------------------------------------------------------------------
+
+# Profiles are intentionally version controlled.
+# Do NOT ignore project/volume/data/profiles/*.md
+
+
+# ------------------------------------------------------------------------------
+# Models and large generated artifacts
+# ------------------------------------------------------------------------------
+
+project/volume/models/*
+!project/volume/models/.gitkeep
+
+
+# ------------------------------------------------------------------------------
+# Temporary files
+# ------------------------------------------------------------------------------
+
+*.tmp
+*.temp
+*.log
+
+~$*
+*.bak
+*.swp
+*.swo
+
+
+# ------------------------------------------------------------------------------
+# Credentials / secrets
+# ------------------------------------------------------------------------------
+
+.env
+.env.*
+*.pem
+*.key
+credentials.*
+secrets.*
+
+
+# ------------------------------------------------------------------------------
+# Python-generated files, if Python is used
+# ------------------------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+
+.venv/
+venv/
+env/
+
+
+# ------------------------------------------------------------------------------
+# R package / build artifacts
+# ------------------------------------------------------------------------------
+
+*.Rproj
+.Rbuildignore
+*.tar.gz
