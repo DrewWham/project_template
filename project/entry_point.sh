@@ -16,9 +16,9 @@ set -e
 echo "Starting project workflow..."
 
 # Step 1: Build or prepare model-ready features/data
-Rscript src/features/build_features.R
+Rscript ./project/src/features/build_features.R
 
 # Step 2: Fit the final model and generate required output
-Rscript src/models/train_model.R
+Rscript ./project/src/models/train_model.R
 
 echo "Project workflow complete."
