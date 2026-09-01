@@ -30,7 +30,7 @@ project_name/
     │   └── models/
     │
     ├── required/
-    │   ├── requirements.r
+    │   ├── requirements.R
     │   └── requirements.txt
     │
     └── src/
@@ -40,36 +40,40 @@ project_name/
         └── models/
 ```
 
-Do not reorganize the project or create alternative top-level folders unless explicitly requested.
+The named repository directory (`project_name/`) is the expected working directory.
+
+The generic `project/` directory is a structural container inside the repository. Do not treat `project/` itself as the default working directory.
+
+Do not reorganize the repository or create alternative top-level folders unless explicitly requested.
 
 ---
 
-## How to Understand a Project
+## Working Directory and Paths
 
-When beginning work in a project created from this template, inspect context in this order:
+Assume commands and scripts are run from the named repository root unless project-specific instructions explicitly say otherwise.
 
-1. `project/PROJECT_CONTEXT.md` — defines the problem being solved.
-2. `project/volume/data/profiles/` — describes the structure of available datasets.
-3. `project/entry_point.sh` — declares the scripts that make up the final intended workflow and their execution order.
-4. `project/src/` — contains the actual implementation, including exploratory and final scripts.
+Therefore, paths to resources inside the project workspace should normally begin with:
 
-Do not assume every script in `src/` belongs to the final solution. Projects may intentionally retain exploratory, alternative, or abandoned approaches.
-
-Use `entry_point.sh` to distinguish the student's or analyst's declared final workflow from the broader development history.
-
----
-
-## Paths and Portability
-
-Use relative paths within the repository.
-
-Prefer paths such as:
-
-```r
-data.table::fread("volume/data/raw/train.csv")
+```text
+project/
 ```
 
-when code is expected to run from the `project/` directory.
+For example:
+
+```r
+train <- data.table::fread(
+  "project/volume/data/raw/train.csv"
+)
+```
+
+and:
+
+```r
+data.table::fwrite(
+  predictions,
+  "project/volume/data/processed/submission.csv"
+)
+```
 
 Do not use machine-specific absolute paths such as:
 
@@ -85,7 +89,22 @@ or:
 
 Do not rely on `setwd()` as part of the normal project workflow.
 
-Assume the project should continue to work if the repository is cloned or copied to another computer.
+Assume the repository should continue to work if it is cloned or copied to another computer.
+
+---
+
+## How to Understand a Project
+
+When beginning work in a project created from this template, inspect context in this order:
+
+1. `project/PROJECT_CONTEXT.md` — defines the problem being solved.
+2. `project/volume/data/profiles/` — describes the structure of available datasets.
+3. `project/entry_point.sh` — declares the scripts that make up the final intended workflow and their execution order.
+4. `project/src/` — contains the actual implementation, including exploratory and final scripts.
+
+Do not assume every script in `project/src/` belongs to the final solution. Projects may intentionally retain exploratory, alternative, or abandoned approaches.
+
+Use `project/entry_point.sh` to distinguish the declared final workflow from the broader development history.
 
 ---
 
@@ -172,7 +191,7 @@ It may define:
 - project-specific constraints;
 - submission requirements.
 
-When project-specific instructions conflict with generic assumptions, follow `PROJECT_CONTEXT.md`.
+When project-specific instructions conflict with generic assumptions, follow `project/PROJECT_CONTEXT.md`.
 
 Do not invent missing project requirements.
 
@@ -188,9 +207,9 @@ project/entry_point.sh
 
 declares the project's final intended execution path.
 
-A project may contain more scripts than are used in the final solution. This is intentional. Exploratory work, alternative approaches, and intermediate attempts may remain in `src/`.
+A project may contain more scripts than are used in the final solution. This is intentional. Exploratory work, alternative approaches, and intermediate attempts may remain in `project/src/`.
 
-Use `entry_point.sh` to determine:
+Use `project/entry_point.sh` to determine:
 
 - which scripts are part of the final workflow;
 - the order in which those scripts should run;
@@ -198,12 +217,25 @@ Use `entry_point.sh` to determine:
 
 When reviewing or modifying a project:
 
-1. inspect `entry_point.sh` before assuming which scripts are authoritative;
+1. inspect `project/entry_point.sh` before assuming which scripts are authoritative;
 2. preserve scripts that represent development history unless explicitly asked to remove them;
-3. update `entry_point.sh` if the final workflow changes;
+3. update `project/entry_point.sh` if the final workflow changes;
 4. keep the declared execution order consistent with actual dependencies between scripts.
 
-When practical, the commands listed in `entry_point.sh` should reproduce the final project workflow when run from the `project/` directory.
+Because the repository root is the working directory, commands inside `entry_point.sh` should also use repository-root-relative paths.
+
+For example:
+
+```bash
+Rscript project/src/features/build_features.R
+Rscript project/src/models/train_model.R
+```
+
+The entry point itself is normally run from the repository root, for example:
+
+```bash
+bash project/entry_point.sh
+```
 
 Do not silently replace the declared workflow with a different sequence of scripts.
 
@@ -219,21 +251,21 @@ project/src/
 
 Use the existing organization where appropriate.
 
-### `src/data/`
+### `project/src/data/`
 
 Code concerned with data inspection, profiling, ingestion, or other general data utilities.
 
-### `src/features/`
+### `project/src/features/`
 
 Code for cleaning, transforming, joining, or converting source data into analysis- or model-ready features.
 
-### `src/models/`
+### `project/src/models/`
 
 Code for fitting, evaluating, saving, or applying statistical and machine-learning models.
 
-If additional source-code organization is needed, extend `src/` rather than scattering scripts throughout the repository.
+If additional source-code organization is needed, extend `project/src/` rather than scattering scripts throughout the repository.
 
-Do not delete exploratory scripts merely because they are not listed in `entry_point.sh`.
+Do not delete exploratory scripts merely because they are not listed in `project/entry_point.sh`.
 
 ---
 
@@ -243,6 +275,12 @@ The standard profiling utility is expected at:
 
 ```text
 project/src/data/profile_data.R
+```
+
+Run it from the repository root:
+
+```bash
+Rscript project/src/data/profile_data.R
 ```
 
 When new data are added, generating or refreshing the relevant profiles should generally occur before substantial feature engineering or modeling.
@@ -272,7 +310,7 @@ Follow `.gitignore` rules when determining which generated resources should rema
 R dependencies should be documented in:
 
 ```text
-project/required/requirements.r
+project/required/requirements.R
 ```
 
 Python dependencies, when applicable, should be documented in:
@@ -295,7 +333,7 @@ Prefer workflows in which important project outputs can be regenerated from:
 2. version-controlled code;
 3. documented dependencies;
 4. project-specific context; and
-5. the execution order declared in `entry_point.sh`.
+5. the execution order declared in `project/entry_point.sh`.
 
 Use an explicit random seed when randomness affects results.
 
@@ -312,18 +350,19 @@ The final project should make it possible to distinguish:
 
 When assisting with this repository:
 
-1. Read `PROJECT_CONTEXT.md` when available.
-2. Inspect relevant files in `volume/data/profiles/` before requesting complete datasets.
-3. Read `entry_point.sh` to understand the declared final workflow.
-4. Inspect existing source code before proposing replacement code.
-5. Preserve exploratory and intermediate scripts unless explicitly asked to remove them.
-6. Preserve the repository's directory conventions.
-7. Use relative paths.
-8. Do not modify raw data.
-9. Place generated resources in the appropriate `volume/` location.
-10. Place reusable code in the appropriate `src/` location.
-11. Update `entry_point.sh` when changes alter the final execution path.
-12. Explain assumptions when project information is incomplete.
-13. Do not fabricate details about unavailable data, requirements, existing code, or execution order.
+1. Assume the named repository root is the working directory.
+2. Read `project/PROJECT_CONTEXT.md` when available.
+3. Inspect relevant files in `project/volume/data/profiles/` before requesting complete datasets.
+4. Read `project/entry_point.sh` to understand the declared final workflow.
+5. Inspect existing source code before proposing replacement code.
+6. Preserve exploratory and intermediate scripts unless explicitly asked to remove them.
+7. Preserve the repository's directory conventions.
+8. Use repository-root-relative paths beginning with `project/` for resources inside the project workspace.
+9. Do not modify raw data.
+10. Place generated resources in the appropriate `project/volume/` location.
+11. Place reusable code in the appropriate `project/src/` location.
+12. Update `project/entry_point.sh` when changes alter the final execution path.
+13. Explain assumptions when project information is incomplete.
+14. Do not fabricate details about unavailable data, requirements, existing code, or execution order.
 
 The objective is not merely to produce code that runs. The resulting project should remain understandable, portable, reproducible, and explicit about which code constitutes the final workflow.
