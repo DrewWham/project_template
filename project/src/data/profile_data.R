@@ -247,6 +247,16 @@ numeric_summary <- function(x) {
     return(NULL)
   }
 
+  # fread() may import very large whole-number columns as bit64::integer64.
+  # quantile.integer64() does not support the default quantile algorithm
+  # used below, so convert only the summary copy to ordinary numeric values.
+  # The original dataset is never modified.
+  if (inherits(vals, "integer64")) {
+    vals <- suppressWarnings(
+      as.numeric(vals)
+    )
+  }
+
   qs <- quantile(
     vals,
     probs = c(0, 0.25, 0.5, 0.75, 1),
@@ -740,3 +750,4 @@ for (path in files) {
 }
 
 message("Done.")
+
